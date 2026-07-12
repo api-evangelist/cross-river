@@ -1,0 +1,182 @@
+aid: cross-river
+name: Cross River
+review:
+  question: Does Cross River expose a documented public WebSocket API?
+  answer: false
+  date: '2026-07-12'
+  reviewer: API Evangelist
+  asyncapiSpecCreated: false
+  asyncapiScopeNote: |
+    No AsyncAPI document was authored. The Cross River Operating System (COS) is
+    a set of request/response REST APIs over HTTPS. Asynchronous / event delivery
+    is handled by COS Webhooks (Cross River POSTs event notifications - account
+    updates, transaction status changes - to a partner-configured HTTP endpoint),
+    not by a bidirectional WebSocket (ws:// or wss://) or SSE stream on Cross
+    River's own API. There is therefore no server-push WebSocket transport to
+    model. No `wss://` endpoint is documented anywhere in the public COS
+    reference as of the review date.
+findings:
+  summary: |
+    Cross River does not publish a documented public WebSocket API. Cross River
+    is a regulated bank (FDIC member, Fort Lee, NJ) offering embedded finance /
+    Banking-as-a-Service through the Cross River Operating System (COS). COS is a
+    collection of RESTful APIs - Customer Management (KYC/onboarding), Deposit
+    Accounts, ACH, Wires, Instant Payments (RTP/FedNow/CRNow), Card Management,
+    and Lending - organized around REST with object-oriented URLs and JSON
+    responses. Authentication is OAuth 2.0 (client credentials grant): partners
+    POST client_id/client_secret to an identity-provider token endpoint and
+    receive a signed JWT that is sent as `Authorization: Bearer <token>` on each
+    request. Asynchronous notifications are delivered via COS Webhooks (HTTP
+    callbacks), not WebSocket. No realtime, bidirectional, or streaming WebSocket
+    endpoint is documented on Cross River's own API.
+  accessModel: |
+    Access is partner/enterprise-gated. Cross River is a chartered bank; COS
+    programs are onboarded through Cross River sales and a relationship manager,
+    who provision OAuth2 client credentials for the sandbox
+    (https://sandbox.crbcos.com) and, after go-live, for production. There is no
+    open self-service signup, and the production base URL is not published in the
+    open documentation. The developer documentation at docs.crossriver.com is
+    publicly readable (paths, methods, module base URLs, concepts), but the live
+    sandbox and the full OpenAPI / Postman collection are shared only with
+    onboarded partners.
+  realVsModeled: |
+    CONFIRMED from public docs (docs.crossriver.com, 2026-07-12): the OAuth2
+    client-credentials auth model and token endpoints; the sandbox host
+    https://sandbox.crbcos.com and per-module base paths (/core, /ach, /wires,
+    /rtp, /cardmanagement, /cardpayments, /international, /checks, /webhooks,
+    /sweepsintrafi) plus the separate lending hosts (arixapisandbox.crbnj.net,
+    lendingsandbox.crbcos.com); and the documented endpoint paths + HTTP methods
+    listed below. MODELED (honestly flagged in the OpenAPI): the request/response
+    BODY schemas, since the detailed field-level schemas live in the
+    credential-gated OpenAPI / Postman collection Cross River shares with
+    onboarded partners. No base URLs or endpoint paths were invented.
+  transports:
+    - protocol: REST
+      scheme: https
+      baseURL: https://sandbox.crbcos.com
+      documented: true
+      note: >-
+        COS core modules (Core/Accounts/Customer Management, ACH, Wires, RTP,
+        Card Management, etc.) under per-module path prefixes. Production host
+        provisioned at go-live and not publicly documented.
+    - protocol: REST
+      scheme: https
+      baseURL: https://arixapisandbox.crbnj.net
+      documented: true
+      note: Lending / loan origination on a separate host and OAuth server (oauthtest.crbnj.net).
+    - protocol: Webhook
+      scheme: https
+      documented: true
+      note: >-
+        COS Webhooks (base https://sandbox.crbcos.com/webhooks) POST event
+        notifications to a partner-configured HTTP endpoint. Server-to-endpoint
+        HTTP callbacks, not WebSocket.
+    - protocol: WebSocket
+      scheme: wss
+      documented: false
+      note: No WebSocket endpoint is documented anywhere in the COS reference as of the review date.
+  authentication:
+    type: OAuth 2.0
+    grant: client_credentials
+    tokenEndpoints:
+      - https://idptest.crbcos.com/connect/token
+      - https://oauthtest.crbnj.net/connect/token
+    tokenFormat: signed JWT
+    usage: 'Authorization: Bearer <token> on every request.'
+    note: >-
+      client_id / client_secret are provisioned during partner onboarding.
+      Optional audience and scope parameters may be supplied when requesting a
+      token.
+  endpointsConfirmedRest:
+    - POST   https://sandbox.crbcos.com/core/v1/cm/customers
+    - GET    https://sandbox.crbcos.com/core/v1/cm/customers/{id}
+    - POST   https://sandbox.crbcos.com/core/v1/cm/customers/{customerid}/beneficial-owners
+    - POST   https://sandbox.crbcos.com/core/v1/cm/customers/{customerid}/identifications
+    - POST   https://sandbox.crbcos.com/core/v1/cm/customers/{customerid}/addresses
+    - POST   https://sandbox.crbcos.com/core/v1/cm/customers/{customerid}/phones
+    - PUT    https://sandbox.crbcos.com/core/v1/cm/customers/{customerid}/name
+    - DELETE https://sandbox.crbcos.com/core/v1/cm/customers/{id}
+    - POST   https://sandbox.crbcos.com/core/v1/dda/accounts
+    - POST   https://sandbox.crbcos.com/core/v1/dda/accounts/{accountnumber}/restrictions
+    - DELETE https://sandbox.crbcos.com/core/v1/dda/accounts/{accountnumber}/restrictions/{id}
+    - GET    https://sandbox.crbcos.com/core/v1/dda/accounts/{accountnumber}/statements
+    - POST   https://sandbox.crbcos.com/core/v1/dda/subaccounts
+    - GET    https://sandbox.crbcos.com/core/v1/dda/subaccounts/{accountnumber}
+    - POST   https://sandbox.crbcos.com/ach/v1/payments
+    - POST   https://sandbox.crbcos.com/wires/v1/payments
+    - POST   https://sandbox.crbcos.com/wires/v1/payments/{id}/cancel
+    - POST   https://sandbox.crbcos.com/wires/v1/payments/corporate
+    - POST   https://sandbox.crbcos.com/rtp/v1/payments
+    - POST   https://sandbox.crbcos.com/rtp/v1/payments/payment-request
+    - GET    https://sandbox.crbcos.com/rtp/v1/directory
+    - POST   https://sandbox.crbcos.com/rtp/v1/payments/{id}/return-request
+    - POST   https://sandbox.crbcos.com/rtp/v1/payments/{id}/reject
+    - POST   https://sandbox.crbcos.com/cardmanagement/v1/cards
+    - GET    https://sandbox.crbcos.com/cardmanagement/v1/cards
+    - GET    https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}
+    - POST   https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}/activate
+    - POST   https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}/suspend
+    - POST   https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}/close
+    - PUT    https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}/pin
+    - POST   https://sandbox.crbcos.com/cardmanagement/v1/cards/{id}/replace
+    - POST   https://arixapisandbox.crbnj.net/loan
+    - POST   https://arixapisandbox.crbnj.net/loan/{id}/attachments
+    - PUT    https://arixapisandbox.crbnj.net/loan/{id}/fundinginfo
+    - GET    https://arixapisandbox.crbnj.net/loandetail/{id}
+    - PUT    https://arixapisandbox.crbnj.net/loan/{loanid}/cancel
+  endpointsModeled: |
+    Request/response body schemas for all of the above are MODELED in
+    openapi/cross-river-openapi.yml (representative fields, flagged inline),
+    because the field-level schemas ship in the credential-gated partner OpenAPI
+    / Postman collection. Additional documented ACH operations (reversals,
+    returns, client batches), International Payments (/international), Checks
+    (/checks), Card Payments (/cardpayments), and Deposit Sweeps
+    (/sweepsintrafi) exist in the COS docs but were not enumerated endpoint by
+    endpoint in this pass.
+sources:
+  - url: https://docs.crossriver.com/
+    type: Documentation
+    note: COS documentation home - Get started, Concepts, APIs, Tutorials, Changelog.
+  - url: https://docs.crossriver.com/apis
+    type: APIReference
+    note: APIs intro - categories Webhooks, Customer Management, Accounts, Cards, Payments, Onchain Payments, Lending.
+  - url: https://docs.crossriver.com/get-started/quickstart/get-access-token
+    type: Documentation
+    note: OAuth2 client-credentials token flow; POST /connect/token; signed JWT Bearer token.
+  - url: https://docs.crossriver.com/get-started/quickstart/sandbox-environments
+    type: Documentation
+    note: Per-module sandbox base URLs under sandbox.crbcos.com plus separate lending hosts.
+  - url: https://docs.crossriver.com/apis/customer-management
+    type: APIReference
+    note: Customer Management (KYC/onboarding) endpoints under /core/v1/cm.
+  - url: https://docs.crossriver.com/apis/accounts
+    type: APIReference
+    note: Deposit account and subledger endpoints under /core/v1/dda.
+  - url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+    type: APIReference
+    note: Send ACH payment - POST /ach/v1/payments; idempotency-key header.
+  - url: https://docs.crossriver.com/apis/payments/wires
+    type: APIReference
+    note: Wire transfer, cancel, and drawdown endpoints under /wires/v1.
+  - url: https://docs.crossriver.com/apis/payments/instant-payments
+    type: APIReference
+    note: Instant payments (RTP/FedNow/CRNow) endpoints; send, payment request, directory.
+  - url: https://docs.crossriver.com/apis/cards
+    type: APIReference
+    note: Card management endpoints under /cardmanagement/v1/cards.
+  - url: https://docs.crossriver.com/apis/lending
+    type: APIReference
+    note: Lending / loan origination endpoints on a separate lending host.
+  - url: https://www.crossriver.com/developers/cos
+    type: Documentation
+    note: COS overview - REST APIs for payments, banking, cards, and lending.
+actions:
+  asyncapiPath: null
+  apisYmlUpdated: true
+  reason: |
+    No WebSocket protocol surface exists. The COS API is request/response REST
+    with OAuth2 client-credentials auth, and asynchronous delivery is handled by
+    HTTP webhooks rather than a server-push WebSocket. No AsyncAPI document was
+    created because there is no wss:// transport on Cross River's own API to
+    model. An OpenAPI document was authored from the public docs with endpoint
+    paths and methods confirmed and body schemas honestly flagged as modeled.

@@ -1,0 +1,42 @@
+generated: '2026-07-12'
+method: probed
+source: live DNS/TLS/HTTP probes of apis.yml + documentation + OAuth/sandbox hosts
+hosts:
+- host: crossriver.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 24 03:46:10 2026 GMT
+  hsts: false
+  note: Root returns HTTP 301 (redirect to www) with no Strict-Transport-Security header observed.
+- host: www.crossriver.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Aug 24 04:15:37 2026 GMT
+  hsts: false
+- host: docs.crossriver.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Oct  7 02:59:58 2026 GMT
+  hsts: true
+  hsts_max_age: 31536000
+  hsts_include_subdomains: true
+- host: sandbox.crbcos.com
+  https: unknown
+  note: >-
+    The COS sandbox API host did not respond to unauthenticated HTTPS probes
+    (no TLS handshake / HTTP response returned within timeout). Consistent with a
+    partner-gated / access-restricted banking environment; not publicly probeable.
+domains:
+- domain: crossriver.com
+  dnssec: true
+  caa: []
+  spf: true
+  spf_record: 'v=spf1 include:spf.edgepilot.com include:spf.protection.outlook.com a:mail.wirexchange.goxroads.com include:mail.zendesk.com include:spf.cashedge.com -all'
+  dmarc: true
+  dmarc_policy: reject
+- domain: crbcos.com
+  dnssec: true
+  caa: []
+  spf: false
+  dmarc: true
+  dmarc_policy: reject

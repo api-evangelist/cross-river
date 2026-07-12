@@ -1,0 +1,69 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: Cross River
+providerId: cross-river
+created: '2026-07-12'
+modified: '2026-07-12'
+reconciled: false
+tags:
+- Embedded Finance
+- Payments
+- Rate Limiting
+- Quotas
+description: >-
+  Cross River does not publish fixed numeric per-endpoint rate limits for the
+  Cross River Operating System (COS) in its open documentation. Practical
+  throughput and value limits are governed by (1) the payment network rules -
+  for example instant-payment value caps of $1M on RTP, $500K on FedNow, and
+  unlimited on CRNow - and (2) the per-program limits set in the partner
+  agreement. COS uses standard HTTP response codes; clients should treat 429 as
+  a throttling signal and use an idempotency-key on write operations so requests
+  can be retried safely without duplication.
+notes: >-
+  Numeric per-account or per-endpoint request-rate limits are not documented as
+  of the review date; confirm program-specific transaction and velocity limits
+  with your Cross River relationship manager. Payment-network value caps are set
+  by the networks (The Clearing House / Federal Reserve), not by Cross River.
+sources:
+- https://docs.crossriver.com/get-started/api-basics
+- https://docs.crossriver.com/concepts/payments/instant-payments/payment-send-limits
+- https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+responseCodes:
+  throttled: 429
+limits:
+- name: API Request Rate
+  scope: program
+  metric: requests
+  limit: not published
+  notes: No fixed numeric request-rate limit is published for COS in the open documentation.
+- name: RTP Payment Value
+  scope: transaction
+  metric: usd
+  limit: 1000000
+  notes: Per-transaction value cap for RTP (The Clearing House).
+- name: FedNow Payment Value
+  scope: transaction
+  metric: usd
+  limit: 500000
+  notes: Per-transaction value cap for FedNow (Federal Reserve).
+- name: CRNow Payment Value
+  scope: transaction
+  metric: usd
+  limit: -1
+  notes: CRNow (Cross River's on-us instant rail) has no stated value cap.
+- name: Program Velocity Limits
+  scope: program
+  metric: transactions
+  limit: per agreement
+  notes: Transaction velocity and volume limits are set per program in the partner agreement.
+policies:
+- name: Idempotency
+  description: Write operations accept an idempotency-key (UUID) header so a retried request is not processed twice.
+- name: Backoff Strategy
+  description: Clients should implement exponential backoff with jitter and honor Retry-After on 429 responses.
+- name: Network Rules
+  description: Instant-payment value caps are governed by the underlying network (RTP/FedNow) rather than by a Cross River API limit.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

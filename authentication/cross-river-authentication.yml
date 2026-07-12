@@ -1,0 +1,28 @@
+generated: '2026-07-12'
+method: derived
+source: docs.crossriver.com + openapi/cross-river-openapi.yml
+summary:
+  types:
+  - oauth2
+schemes:
+- name: oauth2ClientCredentials
+  type: oauth2
+  flow: clientCredentials
+  tokenUrl: https://idptest.crbcos.com/connect/token
+  description: >-
+    OAuth 2.0 client credentials grant. Partners are provisioned a client_id and
+    client_secret during onboarding, then POST client_id, client_secret, and
+    grant_type=client_credentials (optionally audience and scope) to the COS
+    identity provider token endpoint. The sandbox token endpoint is
+    https://idptest.crbcos.com/connect/token; the lending module uses
+    https://oauthtest.crbnj.net/connect/token. The response is a signed JWT that
+    must be sent as `Authorization: Bearer <token>` on every API request.
+  sources:
+  - https://docs.crossriver.com/get-started/quickstart/get-access-token
+  - https://docs.crossriver.com/get-started/api-basics
+  - openapi/cross-river-openapi.yml
+notes: >-
+  Access is partner/enterprise-gated - there is no open self-service signup.
+  Credentials for sandbox and, later, production are issued by Cross River during
+  onboarding. Production token/host URLs are provisioned at go-live and are not
+  published in the open documentation.

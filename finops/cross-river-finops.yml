@@ -1,0 +1,115 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: Cross River
+providerId: cross-river
+created: '2026-07-12'
+modified: '2026-07-12'
+reconciled: false
+tags:
+- Embedded Finance
+- Banking as a Service
+- BaaS
+- Payments
+- Cards
+- Lending
+- FinOps
+- Cost Management
+description: >-
+  FinOps view of Cross River Operating System (COS) spend. Cross River is a
+  regulated bank offering embedded finance / Banking-as-a-Service; there is no
+  public, self-service price list. Program economics are set in a negotiated
+  partner agreement and are typically a blend of per-transaction fees (ACH,
+  wires, RTP/FedNow), card issuing/processing fees offset by interchange
+  revenue share, deposit/servicing arrangements, lending fees, and platform or
+  minimum program fees. This makes COS cost management different from
+  usage-metered SaaS: the dominant levers are per-rail transaction economics and
+  interchange, negotiated commercially rather than published per unit.
+notes: >-
+  Per-unit rates (transaction fees, interchange splits, deposit terms) are NOT
+  reconciled here - they are program-specific and confidential to the partner
+  agreement. Confirm the full fee schedule with your Cross River relationship
+  manager. Sandbox usage carries no listed charge.
+sources:
+- https://www.crossriver.com/
+- https://www.crossriver.com/developers/cos
+- https://docs.crossriver.com/
+- https://focus.finops.org/focus-specification/v1-3/
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: Cross River
+serviceCategory: Financial Services and Embedded Finance
+billingModel:
+  pricingCategory: Contract-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  chargeCategories:
+  - Usage
+  - Purchase
+  - Adjustment
+focusColumns:
+  ServiceName: Cross River Operating System (COS)
+  ServiceCategory: Financial Services and Embedded Finance
+  ProviderName: Cross River
+  PublisherName: Cross River
+  InvoiceIssuerName: Cross River Bank
+  BillingCurrency: USD
+  ChargeCategory: Usage
+  PricingCategory: Contract-Based
+meters:
+- name: ach_transactions
+  description: ACH payments originated/received, typically billed per transaction.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - program
+  - account
+- name: wire_transactions
+  description: Wire transfers sent/received, typically billed per wire.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - program
+  - account
+- name: instant_payments
+  description: RTP / FedNow / CRNow instant payments, typically billed per transaction.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - program
+  - network
+- name: card_transactions
+  description: Card authorizations/settlements; processing fees offset by interchange revenue share.
+  unit: transactions
+  aggregation: sum
+  dimensions:
+  - program
+  - card
+- name: interchange_revenue
+  description: Interchange earned on card programs, shared per the partner agreement (a credit, not a cost).
+  unit: usd
+  aggregation: sum
+  dimensions:
+  - program
+- name: loans_originated
+  description: Loans originated/serviced through the lending module, priced per the agreement.
+  unit: loans
+  aggregation: sum
+  dimensions:
+  - program
+principles:
+- name: Visibility
+  description: Track transaction counts and values per rail (ACH, wires, RTP/FedNow), per card program, and per loan to understand where fees accrue.
+- name: Allocation
+  description: Map COS programs, accounts, and subledgers to internal cost centers so per-rail fees and interchange are attributed to the right product line.
+- name: Optimization
+  description: Route payments over the most cost-effective rail for each use case, and model interchange revenue share against card processing fees for net card-program economics.
+- name: Accountability
+  description: Assign owners per program; reconcile monthly Cross River invoices against the negotiated fee schedule and interchange credits.
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com

@@ -1,0 +1,264 @@
+{
+  "info": {
+    "name": "Cross River Operating System (COS) API",
+    "description": "RESTful APIs from Cross River Bank for embedded finance / Banking-as-a-Service: Customer Management (KYC/onboarding), Deposit Accounts, ACH, Wires, Instant Payments (RTP/FedNow/CRNow), Card Management, and Lending. Access is partner/enterprise-gated - OAuth2 client_id/client_secret are provisioned during onboarding, exchanged for a signed JWT at https://idptest.crbcos.com/connect/token (lending: https://oauthtest.crbnj.net/connect/token), and sent as a Bearer token. Core sandbox base URL: https://sandbox.crbcos.com. Lending sandbox base URL: https://arixapisandbox.crbnj.net. Request bodies are MODELED representative structures - verify against the partner-provided collection.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      { "key": "token", "value": "{{accessToken}}", "type": "string" }
+    ]
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "https://sandbox.crbcos.com", "type": "string" },
+    { "key": "lendingBaseUrl", "value": "https://arixapisandbox.crbnj.net", "type": "string" },
+    { "key": "accessToken", "value": "", "type": "string" }
+  ],
+  "item": [
+    {
+      "name": "Customer Management",
+      "item": [
+        {
+          "name": "Create a customer",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"type\": \"personal\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\",\n  \"email\": \"jane@example.com\"\n}" },
+            "url": { "raw": "{{baseUrl}}/core/v1/cm/customers", "host": ["{{baseUrl}}"], "path": ["core", "v1", "cm", "customers"] },
+            "description": "Creates a personal or business customer record for KYC / onboarding. MODELED body."
+          }
+        },
+        {
+          "name": "Retrieve a customer",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/core/v1/cm/customers/:id", "host": ["{{baseUrl}}"], "path": ["core", "v1", "cm", "customers", ":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Retrieves a customer record by ID."
+          }
+        },
+        {
+          "name": "Add a beneficial owner",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/core/v1/cm/customers/:customerId/beneficial-owners", "host": ["{{baseUrl}}"], "path": ["core", "v1", "cm", "customers", ":customerId", "beneficial-owners"], "variable": [{ "key": "customerId", "value": "" }] },
+            "description": "Adds a beneficial owner to a business customer. MODELED body."
+          }
+        },
+        {
+          "name": "Add an identification",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/core/v1/cm/customers/:customerId/identifications", "host": ["{{baseUrl}}"], "path": ["core", "v1", "cm", "customers", ":customerId", "identifications"], "variable": [{ "key": "customerId", "value": "" }] },
+            "description": "Adds an identification document to a customer. MODELED body."
+          }
+        },
+        {
+          "name": "Deactivate a customer",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/core/v1/cm/customers/:id", "host": ["{{baseUrl}}"], "path": ["core", "v1", "cm", "customers", ":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Deactivates a customer record."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Accounts",
+      "item": [
+        {
+          "name": "Open a deposit account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"productId\": \"\",\n  \"customerId\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/core/v1/dda/accounts", "host": ["{{baseUrl}}"], "path": ["core", "v1", "dda", "accounts"] },
+            "description": "Creates a deposit account (DDA) based on a product ID. MODELED body."
+          }
+        },
+        {
+          "name": "Restrict an account",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{baseUrl}}/core/v1/dda/accounts/:accountNumber/restrictions", "host": ["{{baseUrl}}"], "path": ["core", "v1", "dda", "accounts", ":accountNumber", "restrictions"], "variable": [{ "key": "accountNumber", "value": "" }] },
+            "description": "Applies a restriction to a deposit account. MODELED body."
+          }
+        },
+        {
+          "name": "List account statements",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/core/v1/dda/accounts/:accountNumber/statements", "host": ["{{baseUrl}}"], "path": ["core", "v1", "dda", "accounts", ":accountNumber", "statements"], "variable": [{ "key": "accountNumber", "value": "" }] },
+            "description": "Retrieves statement information for a deposit account."
+          }
+        }
+      ]
+    },
+    {
+      "name": "ACH",
+      "item": [
+        {
+          "name": "Send an ACH payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "idempotency-key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 100.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\",\n  \"secCode\": \"PPD\",\n  \"sameDay\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/ach/v1/payments", "host": ["{{baseUrl}}"], "path": ["ach", "v1", "payments"] },
+            "description": "Originates a single ACH payment over the Federal Reserve ACH network. MODELED body."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Wires",
+      "item": [
+        {
+          "name": "Send a wire transfer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "idempotency-key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 1000.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\"\n}" },
+            "url": { "raw": "{{baseUrl}}/wires/v1/payments", "host": ["{{baseUrl}}"], "path": ["wires", "v1", "payments"] },
+            "description": "Sends a single domestic wire transfer payment. MODELED body."
+          }
+        },
+        {
+          "name": "Cancel a wire transfer",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/wires/v1/payments/:id/cancel", "host": ["{{baseUrl}}"], "path": ["wires", "v1", "payments", ":id", "cancel"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Cancels a wire transfer payment by ID."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Instant Payments",
+      "item": [
+        {
+          "name": "Send an instant payment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "idempotency-key", "value": "{{$guid}}" }
+            ],
+            "body": { "mode": "raw", "raw": "{\n  \"amount\": 250.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\",\n  \"creditorAccountNumber\": \"\",\n  \"creditorRoutingNumber\": \"\",\n  \"network\": \"RTP\"\n}" },
+            "url": { "raw": "{{baseUrl}}/rtp/v1/payments", "host": ["{{baseUrl}}"], "path": ["rtp", "v1", "payments"] },
+            "description": "Initiates a single instant payment over CRNow, RTP, or FedNow. MODELED body."
+          }
+        },
+        {
+          "name": "Get supported instant-payment services",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/rtp/v1/directory?routingNumber=", "host": ["{{baseUrl}}"], "path": ["rtp", "v1", "directory"], "query": [{ "key": "routingNumber", "value": "" }] },
+            "description": "Retrieves the instant-payment services supported by a financial institution."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cards",
+      "item": [
+        {
+          "name": "List cards",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/cardmanagement/v1/cards", "host": ["{{baseUrl}}"], "path": ["cardmanagement", "v1", "cards"] },
+            "description": "Returns details about cards matching the supplied filters."
+          }
+        },
+        {
+          "name": "Create a card",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"customerId\": \"\",\n  \"accountNumber\": \"\",\n  \"cardType\": \"physical\"\n}" },
+            "url": { "raw": "{{baseUrl}}/cardmanagement/v1/cards", "host": ["{{baseUrl}}"], "path": ["cardmanagement", "v1", "cards"] },
+            "description": "Requests creation of a new debit card. MODELED body."
+          }
+        },
+        {
+          "name": "Get a card",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/cardmanagement/v1/cards/:id", "host": ["{{baseUrl}}"], "path": ["cardmanagement", "v1", "cards", ":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Returns the details of a specific debit card by ID."
+          }
+        },
+        {
+          "name": "Activate a card",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/cardmanagement/v1/cards/:id/activate", "host": ["{{baseUrl}}"], "path": ["cardmanagement", "v1", "cards", ":id", "activate"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Activates a card for a customer."
+          }
+        },
+        {
+          "name": "Close a card",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": { "raw": "{{baseUrl}}/cardmanagement/v1/cards/:id/close", "host": ["{{baseUrl}}"], "path": ["cardmanagement", "v1", "cards", ":id", "close"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Permanently deactivates a card. Closed cards cannot be reactivated."
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lending",
+      "item": [
+        {
+          "name": "Add a loan",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{lendingBaseUrl}}/loan", "host": ["{{lendingBaseUrl}}"], "path": ["loan"] },
+            "description": "Creates a loan record in the lending system (separate host and OAuth server). MODELED body."
+          }
+        },
+        {
+          "name": "Get loan details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": { "raw": "{{lendingBaseUrl}}/loandetail/:id", "host": ["{{lendingBaseUrl}}"], "path": ["loandetail", ":id"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Retrieves the details of a loan by ID."
+          }
+        },
+        {
+          "name": "Request loan funding rails",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{}" },
+            "url": { "raw": "{{lendingBaseUrl}}/loan/:id/fundinginfo", "host": ["{{lendingBaseUrl}}"], "path": ["loan", ":id", "fundinginfo"], "variable": [{ "key": "id", "value": "" }] },
+            "description": "Requests new payment rails for funding a loan. MODELED body."
+          }
+        }
+      ]
+    }
+  ]
+}

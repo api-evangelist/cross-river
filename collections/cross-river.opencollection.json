@@ -1,0 +1,263 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cross River Operating System (COS) API",
+    "version": "1.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{accessToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": { "name": "Customer Management", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Create a customer.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/core/v1/cm/customers",
+            "body": { "type": "json", "data": "{\n  \"type\": \"personal\",\n  \"firstName\": \"Jane\",\n  \"lastName\": \"Doe\"\n}" }
+          },
+          "docs": "Creates a personal or business customer record for KYC / onboarding. MODELED body."
+        },
+        {
+          "info": { "name": "Retrieve a customer.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.crbcos.com/core/v1/cm/customers/:id",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The customer ID." }
+            ]
+          },
+          "docs": "Retrieves a customer record by ID."
+        },
+        {
+          "info": { "name": "Add a beneficial owner.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/core/v1/cm/customers/:customerId/beneficial-owners",
+            "params": [
+              { "name": "customerId", "value": "", "type": "path", "description": "The customer ID." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Adds a beneficial owner to a business customer. MODELED body."
+        },
+        {
+          "info": { "name": "Deactivate a customer.", "type": "http" },
+          "http": {
+            "method": "DELETE",
+            "url": "https://sandbox.crbcos.com/core/v1/cm/customers/:id",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The customer ID." }
+            ]
+          },
+          "docs": "Deactivates a customer record."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Accounts", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Open a deposit account.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/core/v1/dda/accounts",
+            "body": { "type": "json", "data": "{\n  \"productId\": \"\",\n  \"customerId\": \"\"\n}" }
+          },
+          "docs": "Creates a deposit account (DDA) based on a product ID. MODELED body."
+        },
+        {
+          "info": { "name": "Restrict an account.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/core/v1/dda/accounts/:accountNumber/restrictions",
+            "params": [
+              { "name": "accountNumber", "value": "", "type": "path", "description": "The deposit account number." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Applies a restriction to a deposit account. MODELED body."
+        },
+        {
+          "info": { "name": "List account statements.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.crbcos.com/core/v1/dda/accounts/:accountNumber/statements",
+            "params": [
+              { "name": "accountNumber", "value": "", "type": "path", "description": "The deposit account number." }
+            ]
+          },
+          "docs": "Retrieves statement information for a deposit account."
+        }
+      ]
+    },
+    {
+      "info": { "name": "ACH", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Send an ACH payment.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/ach/v1/payments",
+            "headers": [
+              { "name": "idempotency-key", "value": "", "description": "Client-generated UUID for safe retries." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"amount\": 100.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\",\n  \"secCode\": \"PPD\"\n}" }
+          },
+          "docs": "Originates a single ACH payment over the Federal Reserve ACH network. MODELED body."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Wires", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Send a wire transfer.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/wires/v1/payments",
+            "headers": [
+              { "name": "idempotency-key", "value": "", "description": "Client-generated UUID for safe retries." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"amount\": 1000.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\"\n}" }
+          },
+          "docs": "Sends a single domestic wire transfer payment. MODELED body."
+        },
+        {
+          "info": { "name": "Cancel a wire transfer.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/wires/v1/payments/:id/cancel",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The wire payment ID." }
+            ]
+          },
+          "docs": "Cancels a wire transfer payment by ID."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Instant Payments", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Send an instant payment.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/rtp/v1/payments",
+            "headers": [
+              { "name": "idempotency-key", "value": "", "description": "Client-generated UUID for safe retries." }
+            ],
+            "body": { "type": "json", "data": "{\n  \"amount\": 250.00,\n  \"currency\": \"USD\",\n  \"accountNumber\": \"\",\n  \"network\": \"RTP\"\n}" }
+          },
+          "docs": "Initiates a single instant payment over CRNow, RTP, or FedNow. MODELED body."
+        },
+        {
+          "info": { "name": "Get supported instant-payment services.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.crbcos.com/rtp/v1/directory?routingNumber=",
+            "params": [
+              { "name": "routingNumber", "value": "", "type": "query", "description": "ABA routing number to query." }
+            ]
+          },
+          "docs": "Retrieves the instant-payment services supported by a financial institution."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Cards", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "List cards.", "type": "http" },
+          "http": { "method": "GET", "url": "https://sandbox.crbcos.com/cardmanagement/v1/cards" },
+          "docs": "Returns details about cards matching the supplied filters."
+        },
+        {
+          "info": { "name": "Create a card.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/cardmanagement/v1/cards",
+            "body": { "type": "json", "data": "{\n  \"customerId\": \"\",\n  \"accountNumber\": \"\",\n  \"cardType\": \"physical\"\n}" }
+          },
+          "docs": "Requests creation of a new debit card. MODELED body."
+        },
+        {
+          "info": { "name": "Get a card.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://sandbox.crbcos.com/cardmanagement/v1/cards/:id",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The card ID." }
+            ]
+          },
+          "docs": "Returns the details of a specific debit card by ID."
+        },
+        {
+          "info": { "name": "Activate a card.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/cardmanagement/v1/cards/:id/activate",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The card ID." }
+            ]
+          },
+          "docs": "Activates a card for a customer."
+        },
+        {
+          "info": { "name": "Close a card.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://sandbox.crbcos.com/cardmanagement/v1/cards/:id/close",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The card ID." }
+            ]
+          },
+          "docs": "Permanently deactivates a card. Closed cards cannot be reactivated."
+        }
+      ]
+    },
+    {
+      "info": { "name": "Lending", "type": "folder" },
+      "items": [
+        {
+          "info": { "name": "Add a loan.", "type": "http" },
+          "http": {
+            "method": "POST",
+            "url": "https://arixapisandbox.crbnj.net/loan",
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Creates a loan record in the lending system (separate host and OAuth server). MODELED body."
+        },
+        {
+          "info": { "name": "Get loan details.", "type": "http" },
+          "http": {
+            "method": "GET",
+            "url": "https://arixapisandbox.crbnj.net/loandetail/:id",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The loan ID." }
+            ]
+          },
+          "docs": "Retrieves the details of a loan by ID."
+        },
+        {
+          "info": { "name": "Request loan funding rails.", "type": "http" },
+          "http": {
+            "method": "PUT",
+            "url": "https://arixapisandbox.crbnj.net/loan/:id/fundinginfo",
+            "params": [
+              { "name": "id", "value": "", "type": "path", "description": "The loan ID." }
+            ],
+            "body": { "type": "json", "data": "{}" }
+          },
+          "docs": "Requests new payment rails for funding a loan. MODELED body."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

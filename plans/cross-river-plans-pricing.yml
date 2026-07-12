@@ -1,0 +1,86 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: Cross River
+providerId: cross-river
+created: '2026-07-12'
+modified: '2026-07-12'
+reconciled: false
+tags:
+- Embedded Finance
+- Banking as a Service
+- BaaS
+- Payments
+- Lending
+- Plans
+description: >-
+  Cross River does not publish public, self-service pricing or tiers for the
+  Cross River Operating System (COS). As a regulated bank offering embedded
+  finance / Banking-as-a-Service, Cross River prices each program through a
+  negotiated partner/enterprise agreement handled by sales and a relationship
+  manager. Commercials are typically driven by the products used (accounts, ACH,
+  wires, RTP/FedNow, card issuing and processing, lending) and their transaction
+  economics - per-transaction fees, card interchange sharing, deposit
+  arrangements, and program/platform fees. Exact rates are not public and are not
+  reconciled here.
+notes: >-
+  A sandbox is available to onboarded partners at no listed charge for
+  development and testing; production pricing is set in the partner agreement.
+  Verify all commercial terms directly with Cross River during onboarding.
+sources:
+- https://www.crossriver.com/
+- https://www.crossriver.com/developers/cos
+- https://docs.crossriver.com/
+- https://www.crossriver.com/contact
+plans:
+- id: cross-river-sandbox
+  name: Sandbox (Onboarded Partners)
+  type: free
+  description: >-
+    Isolated sandbox environment (https://sandbox.crbcos.com) for building and
+    testing COS integrations. Access requires partner-provisioned OAuth2
+    credentials issued by a Cross River relationship manager. No public
+    self-service signup.
+  entries:
+  - label: Sandbox Access
+    name: sandbox_access
+    type: flat
+    metric: environment
+    limit: -1
+    timeFrame: month
+    geo: us
+    unit: 1
+    price: no listed charge (partner onboarding required)
+    userMultiplied: false
+  elements:
+  - name: Full COS Module Sandbox
+  - name: OAuth2 Credentials
+  - name: Documentation and Postman Collection
+- id: cross-river-enterprise
+  name: Enterprise / Partner Program
+  type: enterprise
+  description: >-
+    Production COS access under a negotiated partner/enterprise agreement.
+    Pricing is program-specific and driven by the products enabled and their
+    transaction economics (per-transaction fees, card interchange, deposit and
+    program fees). Contact Cross River sales.
+  entries:
+  - label: Partner Agreement
+    name: partner_agreement
+    type: flat
+    metric: contract
+    limit: -1
+    timeFrame: year
+    geo: us
+    unit: 1
+    price: contact sales (custom)
+    userMultiplied: false
+  elements:
+  - name: Production COS Access
+  - name: Custom Transaction Pricing
+  - name: Interchange Economics
+  - name: Compliance and Program Support
+  - name: SLAs and Relationship Manager
+maintainers:
+- FN: Kin Lane
+  email: kin@apievangelist.com
