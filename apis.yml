@@ -167,6 +167,8 @@ apis:
     owners, identifications, addresses, phones, email, due diligence, and profile
     updates. Part of the COS Core module.
 common:
+- type: AgenticAccess
+  url: agentic-access/cross-river-agentic-access.yml
 - type: DomainSecurity
   url: security/cross-river-domain-security.yml
 - type: Authentication
