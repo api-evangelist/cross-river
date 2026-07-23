@@ -1,0 +1,160 @@
+openapi: 3.0.3
+info:
+  title: Cross River Operating System (COS) Accounts Instant Payments API
+  description: 'The Cross River Operating System (COS) is a collection of RESTful APIs from Cross River Bank (an FDIC-member bank) for embedded finance and Banking-as-a-Service - deposit accounts, ACH, wires, instant payments (RTP / FedNow / CRNow), card issuing and management, lending, and customer management (KYC / onboarding). COS is organized around REST with object-oriented URLs and JSON responses, and uses OAuth 2.0 (client credentials grant) to issue a signed JWT Bearer access token that must be sent on every request.
+
+    ACCESS MODEL: Cross River is a regulated bank and COS access is partner/enterprise-gated. Programs are onboarded via Cross River sales and a relationship manager, who provision client_id / client_secret credentials for the sandbox (https://sandbox.crbcos.com) and, after go-live, for production. The public production base URL is not published in the open documentation.
+
+    GROUNDING NOTE: The paths, methods, and module base URLs in this document are grounded in the public Cross River developer documentation at docs.crossriver.com (as of 2026-07-12). Because the live sandbox is credential-gated, request and response BODY SCHEMAS below are MODELED representative structures, not copied from the credential-gated OpenAPI / Postman collection Cross River shares with onboarded partners. Verify exact field names and required properties against the official reference and the partner-provided collection.'
+  version: '1.0'
+  contact:
+    name: Cross River
+    url: https://www.crossriver.com/
+  license:
+    name: Proprietary
+    url: https://www.crossriver.com/
+servers:
+- url: https://sandbox.crbcos.com
+  description: COS sandbox host for the core modules (Core, ACH, Wires, RTP, Cards, etc.). Requires partner-provisioned OAuth2 credentials. Production host is issued separately during go-live and is not publicly documented.
+- url: https://arixapisandbox.crbnj.net
+  description: Lending / loan origination sandbox host (separate from the core COS host).
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Instant Payments
+  description: RTP, FedNow, and CRNow instant payments (COS Payments, /rtp).
+paths:
+  /rtp/v1/payments:
+    post:
+      operationId: sendInstantPayment
+      tags:
+      - Instant Payments
+      summary: Send an instant payment
+      description: Initiates a single instant payment (credit transfer) over CRNow, RTP (The Clearing House), or FedNow, depending on the receiving bank's supported networks. MODELED request body.
+      parameters:
+      - $ref: '#/components/parameters/IdempotencyKey'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstantPaymentInput'
+      responses:
+        '200':
+          description: The created instant payment.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /rtp/v1/directory:
+    get:
+      operationId: getInstantPaymentDirectory
+      tags:
+      - Instant Payments
+      summary: Get supported instant-payment services
+      description: Retrieves a list of instant-payment-related services supported by a specific financial institution (routing number), used to check whether a receiving bank supports RTP and/or FedNow before sending.
+      parameters:
+      - name: routingNumber
+        in: query
+        required: false
+        description: ABA routing number of the financial institution to query.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Supported services for the institution.
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid Bearer token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    InstantPaymentInput:
+      type: object
+      description: MODELED. Verify required fields against the official reference.
+      required:
+      - amount
+      - accountNumber
+      properties:
+        amount:
+          type: number
+        currency:
+          type: string
+          default: USD
+        accountNumber:
+          type: string
+          description: The funding account number.
+        creditorAccountNumber:
+          type: string
+        creditorRoutingNumber:
+          type: string
+        network:
+          type: string
+          enum:
+          - CRNow
+          - RTP
+          - FedNow
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+  parameters:
+    IdempotencyKey:
+      name: idempotency-key
+      in: header
+      required: false
+      description: A client-generated UUID used to safely retry a request without duplicating it.
+      schema:
+        type: string
+        format: uuid
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client credentials grant. POST client_id, client_secret and grant_type=client_credentials to the COS identity provider token endpoint (sandbox: https://idptest.crbcos.com/connect/token; lending uses https://oauthtest.crbnj.net/connect/token). The response is a signed JWT that must be sent as `Authorization: Bearer <token>` on every request.'
+      flows:
+        clientCredentials:
+          tokenUrl: https://idptest.crbcos.com/connect/token
+          scopes: {}

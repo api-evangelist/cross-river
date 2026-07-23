@@ -1,0 +1,227 @@
+openapi: 3.0.3
+info:
+  title: Cross River Operating System (COS) Accounts Cards API
+  description: 'The Cross River Operating System (COS) is a collection of RESTful APIs from Cross River Bank (an FDIC-member bank) for embedded finance and Banking-as-a-Service - deposit accounts, ACH, wires, instant payments (RTP / FedNow / CRNow), card issuing and management, lending, and customer management (KYC / onboarding). COS is organized around REST with object-oriented URLs and JSON responses, and uses OAuth 2.0 (client credentials grant) to issue a signed JWT Bearer access token that must be sent on every request.
+
+    ACCESS MODEL: Cross River is a regulated bank and COS access is partner/enterprise-gated. Programs are onboarded via Cross River sales and a relationship manager, who provision client_id / client_secret credentials for the sandbox (https://sandbox.crbcos.com) and, after go-live, for production. The public production base URL is not published in the open documentation.
+
+    GROUNDING NOTE: The paths, methods, and module base URLs in this document are grounded in the public Cross River developer documentation at docs.crossriver.com (as of 2026-07-12). Because the live sandbox is credential-gated, request and response BODY SCHEMAS below are MODELED representative structures, not copied from the credential-gated OpenAPI / Postman collection Cross River shares with onboarded partners. Verify exact field names and required properties against the official reference and the partner-provided collection.'
+  version: '1.0'
+  contact:
+    name: Cross River
+    url: https://www.crossriver.com/
+  license:
+    name: Proprietary
+    url: https://www.crossriver.com/
+servers:
+- url: https://sandbox.crbcos.com
+  description: COS sandbox host for the core modules (Core, ACH, Wires, RTP, Cards, etc.). Requires partner-provisioned OAuth2 credentials. Production host is issued separately during go-live and is not publicly documented.
+- url: https://arixapisandbox.crbnj.net
+  description: Lending / loan origination sandbox host (separate from the core COS host).
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Cards
+  description: Debit card issuing and management (COS Card Management, /cardmanagement).
+paths:
+  /cardmanagement/v1/cards:
+    get:
+      operationId: listCards
+      tags:
+      - Cards
+      summary: List cards
+      description: Returns details about cards matching the supplied filters.
+      responses:
+        '200':
+          description: A list of cards.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      operationId: createCard
+      tags:
+      - Cards
+      summary: Create a card
+      description: Requests creation of a new debit card for a customer/account. MODELED request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CardInput'
+      responses:
+        '200':
+          description: The created card.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /cardmanagement/v1/cards/{id}:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      operationId: getCard
+      tags:
+      - Cards
+      summary: Get a card
+      description: Returns the details of a specific debit card by its ID.
+      responses:
+        '200':
+          description: The requested card.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cardmanagement/v1/cards/{id}/activate:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    post:
+      operationId: activateCard
+      tags:
+      - Cards
+      summary: Activate a card
+      description: Activates a card for a customer (the preferred way to activate a card).
+      responses:
+        '200':
+          description: Activation confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cardmanagement/v1/cards/{id}/suspend:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    post:
+      operationId: suspendCard
+      tags:
+      - Cards
+      summary: Suspend a card
+      description: Suspends a card by ID.
+      responses:
+        '200':
+          description: Suspend confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /cardmanagement/v1/cards/{id}/close:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    post:
+      operationId: closeCard
+      tags:
+      - Cards
+      summary: Close a card
+      description: Permanently deactivates a card. Closed cards cannot be reactivated.
+      responses:
+        '200':
+          description: Close confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Card'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+components:
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid Bearer token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    CardInput:
+      type: object
+      description: MODELED. Verify required fields against the official reference.
+      required:
+      - customerId
+      - accountNumber
+      properties:
+        customerId:
+          type: string
+        accountNumber:
+          type: string
+        cardType:
+          type: string
+          enum:
+          - physical
+          - virtual
+    Card:
+      allOf:
+      - $ref: '#/components/schemas/CardInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+          last4:
+            type: string
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client credentials grant. POST client_id, client_secret and grant_type=client_credentials to the COS identity provider token endpoint (sandbox: https://idptest.crbcos.com/connect/token; lending uses https://oauthtest.crbnj.net/connect/token). The response is a signed JWT that must be sent as `Authorization: Bearer <token>` on every request.'
+      flows:
+        clientCredentials:
+          tokenUrl: https://idptest.crbcos.com/connect/token
+          scopes: {}

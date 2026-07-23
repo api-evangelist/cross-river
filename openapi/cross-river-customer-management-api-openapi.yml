@@ -1,0 +1,231 @@
+openapi: 3.0.3
+info:
+  title: Cross River Operating System (COS) Accounts Customer Management API
+  description: 'The Cross River Operating System (COS) is a collection of RESTful APIs from Cross River Bank (an FDIC-member bank) for embedded finance and Banking-as-a-Service - deposit accounts, ACH, wires, instant payments (RTP / FedNow / CRNow), card issuing and management, lending, and customer management (KYC / onboarding). COS is organized around REST with object-oriented URLs and JSON responses, and uses OAuth 2.0 (client credentials grant) to issue a signed JWT Bearer access token that must be sent on every request.
+
+    ACCESS MODEL: Cross River is a regulated bank and COS access is partner/enterprise-gated. Programs are onboarded via Cross River sales and a relationship manager, who provision client_id / client_secret credentials for the sandbox (https://sandbox.crbcos.com) and, after go-live, for production. The public production base URL is not published in the open documentation.
+
+    GROUNDING NOTE: The paths, methods, and module base URLs in this document are grounded in the public Cross River developer documentation at docs.crossriver.com (as of 2026-07-12). Because the live sandbox is credential-gated, request and response BODY SCHEMAS below are MODELED representative structures, not copied from the credential-gated OpenAPI / Postman collection Cross River shares with onboarded partners. Verify exact field names and required properties against the official reference and the partner-provided collection.'
+  version: '1.0'
+  contact:
+    name: Cross River
+    url: https://www.crossriver.com/
+  license:
+    name: Proprietary
+    url: https://www.crossriver.com/
+servers:
+- url: https://sandbox.crbcos.com
+  description: COS sandbox host for the core modules (Core, ACH, Wires, RTP, Cards, etc.). Requires partner-provisioned OAuth2 credentials. Production host is issued separately during go-live and is not publicly documented.
+- url: https://arixapisandbox.crbnj.net
+  description: Lending / loan origination sandbox host (separate from the core COS host).
+security:
+- oauth2ClientCredentials: []
+tags:
+- name: Customer Management
+  description: Customer records, KYC, and onboarding (COS Core module, /core/v1/cm).
+paths:
+  /core/v1/cm/customers:
+    post:
+      operationId: createCustomer
+      tags:
+      - Customer Management
+      summary: Create a customer
+      description: Creates a personal or business customer record used for KYC / onboarding. A customer record is required before opening deposit accounts or issuing cards. MODELED request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerInput'
+      responses:
+        '200':
+          description: The created customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+  /core/v1/cm/customers/{id}:
+    parameters:
+    - $ref: '#/components/parameters/Id'
+    get:
+      operationId: getCustomer
+      tags:
+      - Customer Management
+      summary: Retrieve a customer
+      description: Retrieves a customer record by its ID.
+      responses:
+        '200':
+          description: The requested customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      operationId: deactivateCustomer
+      tags:
+      - Customer Management
+      summary: Deactivate a customer
+      description: Deactivates (soft-deletes) a customer record.
+      responses:
+        '200':
+          description: Deactivation confirmation.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatusResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  /core/v1/cm/customers/{customerId}/beneficial-owners:
+    parameters:
+    - $ref: '#/components/parameters/CustomerId'
+    post:
+      operationId: addBeneficialOwner
+      tags:
+      - Customer Management
+      summary: Add a beneficial owner
+      description: Adds a beneficial owner to a business customer. MODELED request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The updated customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /core/v1/cm/customers/{customerId}/identifications:
+    parameters:
+    - $ref: '#/components/parameters/CustomerId'
+    post:
+      operationId: addIdentification
+      tags:
+      - Customer Management
+      summary: Add an identification
+      description: Adds an identification document (e.g. SSN, passport) to a customer. MODELED request body.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: The updated customer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+components:
+  schemas:
+    CustomerInput:
+      type: object
+      description: MODELED. Verify required fields against the official reference.
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - personal
+          - business
+        firstName:
+          type: string
+        lastName:
+          type: string
+        legalName:
+          type: string
+          description: Legal name for a business customer.
+        email:
+          type: string
+          format: email
+    Error:
+      type: object
+      properties:
+        error:
+          type: object
+          properties:
+            code:
+              type: string
+            message:
+              type: string
+            details:
+              type: object
+              additionalProperties: true
+    StatusResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        status:
+          type: string
+    Customer:
+      allOf:
+      - $ref: '#/components/schemas/CustomerInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          status:
+            type: string
+  parameters:
+    CustomerId:
+      name: customerId
+      in: path
+      required: true
+      description: The unique identifier of the customer.
+      schema:
+        type: string
+    Id:
+      name: id
+      in: path
+      required: true
+      description: The unique identifier of the resource.
+      schema:
+        type: string
+  responses:
+    ValidationError:
+      description: The request payload failed validation.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Missing or invalid Bearer token.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: The requested resource was not found.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  securitySchemes:
+    oauth2ClientCredentials:
+      type: oauth2
+      description: 'OAuth 2.0 client credentials grant. POST client_id, client_secret and grant_type=client_credentials to the COS identity provider token endpoint (sandbox: https://idptest.crbcos.com/connect/token; lending uses https://oauthtest.crbnj.net/connect/token). The response is a signed JWT that must be sent as `Authorization: Bearer <token>` on every request.'
+      flows:
+        clientCredentials:
+          tokenUrl: https://idptest.crbcos.com/connect/token
+          scopes: {}
