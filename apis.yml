@@ -11,7 +11,20 @@ description: Cross River is a regulated bank (FDIC member, Fort Lee, NJ) that de
   provisioned for sandbox and then production. Endpoints are grounded in the public
   developer documentation at docs.crossriver.com; request/response schemas are
   modeled where the live sandbox is credential-gated.
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cross-river.png
 tags:
 - Embedded Finance
 - Banking as a Service
@@ -32,140 +45,214 @@ specificationVersion: '0.19'
 apis:
 - aid: cross-river:cross-river-accounts-api
   name: Cross River Accounts API
-  tags:
-  - Accounts
-  - Deposits
-  - DDA
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+  description: Deposit accounts and subledgers (COS Core module, /core/v1/dda).
   humanURL: https://docs.crossriver.com/apis/accounts
   baseURL: https://sandbox.crbcos.com/core
+  tags:
+  - Accounts
   properties:
-  - url: https://docs.crossriver.com/apis/accounts
-    type: Documentation
-  - url: https://docs.crossriver.com/apis
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Open and manage COS deposit accounts (DDA) and subledgers - create
-    accounts from a product, apply and remove restrictions, retrieve statements and
-    tax documents, and manage time deposits (CDs). Part of the COS Core module.
+  - type: OpenAPI
+    url: openapi/cross-river-accounts-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
 - aid: cross-river:cross-river-ach-api
-  name: Cross River ACH Payments API
+  name: Cross River ACH API
+  description: ACH origination and receipt (COS Payments, /ach).
+  humanURL: https://docs.crossriver.com/apis/accounts
+  baseURL: https://sandbox.crbcos.com/core
   tags:
   - ACH
-  - Payments
-  - Same Day ACH
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/payments/ach
-  baseURL: https://sandbox.crbcos.com/ach
   properties:
-  - url: https://docs.crossriver.com/apis/payments/ach
-    type: Documentation
-  - url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Originate and receive ACH payments over the Federal Reserve ACH network -
-    single payments, client batches, same-day ACH, reversals, and returns, with
-    utilization monitoring. Part of the COS Payments module.
-- aid: cross-river:cross-river-wires-api
-  name: Cross River Wires API
-  tags:
-  - Wires
-  - Fedwire
-  - Payments
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/payments/wires
-  baseURL: https://sandbox.crbcos.com/wires
-  properties:
-  - url: https://docs.crossriver.com/apis/payments/wires
-    type: Documentation
-  - url: https://docs.crossriver.com/apis
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Send domestic wire transfer payments, cancel wires, and handle drawdown
-    requests and responses (request an inbound wire and respond to one). Part of the
-    COS Payments module.
-- aid: cross-river:cross-river-instant-payments-api
-  name: Cross River Instant Payments API
-  tags:
-  - RTP
-  - FedNow
-  - Instant Payments
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/payments/instant-payments
-  baseURL: https://sandbox.crbcos.com/rtp
-  properties:
-  - url: https://docs.crossriver.com/apis/payments/instant-payments
-    type: Documentation
-  - url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
-    type: Documentation
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Send and receive funds instantly 24/7 across CRNow, RTP (The Clearing
-    House), and FedNow - initiate credit transfers, requests for payment, returns,
-    and query supported financial institutions via the directory. Part of the COS
-    Payments module.
+  - type: OpenAPI
+    url: openapi/cross-river-ach-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
 - aid: cross-river:cross-river-cards-api
   name: Cross River Cards API
+  description: Debit card issuing and management (COS Card Management, /cardmanagement).
+  humanURL: https://docs.crossriver.com/apis/accounts
+  baseURL: https://sandbox.crbcos.com/core
   tags:
   - Cards
-  - Card Issuing
-  - Debit
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/cards
-  baseURL: https://sandbox.crbcos.com/cardmanagement
   properties:
-  - url: https://docs.crossriver.com/apis/cards
-    type: Documentation
-  - url: https://docs.crossriver.com/apis
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Issue and manage debit cards - create cards, activate, suspend and
-    unsuspend, close, replace lost/stolen/damaged cards, set the PIN, and manage
-    spend controls. Part of the COS Card Management module.
-- aid: cross-river:cross-river-lending-api
-  name: Cross River Lending API
-  tags:
-  - Lending
-  - Loans
-  - Loan Origination
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/lending
-  baseURL: https://arixapisandbox.crbnj.net
-  properties:
-  - url: https://docs.crossriver.com/apis/lending
-    type: Documentation
-  - url: https://docs.crossriver.com/apis
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Originate and service loans - create and update loan applications,
-    attach documents, request funding payment rails, retrieve loan details, and
-    cancel loans. Uses a separate lending host and OAuth server from the core COS
-    modules.
+  - type: OpenAPI
+    url: openapi/cross-river-cards-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
 - aid: cross-river:cross-river-customer-management-api
   name: Cross River Customer Management API
-  tags:
-  - KYC
-  - Onboarding
-  - Customer Management
-  image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-  humanURL: https://docs.crossriver.com/apis/customer-management
+  description: Customer records, KYC, and onboarding (COS Core module, /core/v1/cm).
+  humanURL: https://docs.crossriver.com/apis/accounts
   baseURL: https://sandbox.crbcos.com/core
+  tags:
+  - Customer Management
   properties:
-  - url: https://docs.crossriver.com/apis/customer-management
-    type: Documentation
-  - url: https://docs.crossriver.com/apis
-    type: APIReference
-  - url: openapi/cross-river-openapi.yml
-    type: OpenAPI
-  description: Create and manage the customer records (KYC/onboarding) required before
-    opening accounts or issuing cards - personal and business customers, beneficial
-    owners, identifications, addresses, phones, email, due diligence, and profile
-    updates. Part of the COS Core module.
+  - type: OpenAPI
+    url: openapi/cross-river-customer-management-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
+- aid: cross-river:cross-river-instant-payments-api
+  name: Cross River Instant Payments API
+  description: RTP, FedNow, and CRNow instant payments (COS Payments, /rtp).
+  humanURL: https://docs.crossriver.com/apis/accounts
+  baseURL: https://sandbox.crbcos.com/core
+  tags:
+  - Instant Payments
+  properties:
+  - type: OpenAPI
+    url: openapi/cross-river-instant-payments-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
+- aid: cross-river:cross-river-lending-api
+  name: Cross River Lending API
+  description: Loan origination and servicing (separate lending host).
+  humanURL: https://docs.crossriver.com/apis/accounts
+  baseURL: https://sandbox.crbcos.com/core
+  tags:
+  - Lending
+  properties:
+  - type: OpenAPI
+    url: openapi/cross-river-lending-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
+- aid: cross-river:cross-river-wires-api
+  name: Cross River Wires API
+  description: Domestic wire transfers and drawdowns (COS Payments, /wires).
+  humanURL: https://docs.crossriver.com/apis/accounts
+  baseURL: https://sandbox.crbcos.com/core
+  tags:
+  - Wires
+  properties:
+  - type: OpenAPI
+    url: openapi/cross-river-wires-api-openapi.yml
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/accounts
+  - type: APIReference
+    url: https://docs.crossriver.com/apis
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/ach
+  - type: APIReference
+    url: https://docs.crossriver.com/apis/payments/ach/apis/send-ach-transaction
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/wires
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/payments/instant-payments
+  - type: Documentation
+    url: https://docs.crossriver.com/concepts/payments/instant-payments/payment-networks
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/cards
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/lending
+  - type: Documentation
+    url: https://docs.crossriver.com/apis/customer-management
 common:
 - type: AgenticAccess
   url: agentic-access/cross-river-agentic-access.yml
