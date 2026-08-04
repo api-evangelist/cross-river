@@ -1,0 +1,26 @@
+{
+  "provider": "cross-river",
+  "sources": [
+    "cross-river-accounts-api-openapi.yml",
+    "cross-river-ach-api-openapi.yml",
+    "cross-river-cards-api-openapi.yml",
+    "cross-river-customer-management-api-openapi.yml",
+    "cross-river-instant-payments-api-openapi.yml",
+    "cross-river-lending-api-openapi.yml",
+    "cross-river-wires-api-openapi.yml"
+  ],
+  "outputs": [
+    "cross-river-accounts-api-openapi.yml",
+    "cross-river-ach-api-openapi.yml",
+    "cross-river-cards-api-openapi.yml",
+    "cross-river-customer-management-api-openapi.yml",
+    "cross-river-instant-payments-api-openapi.yml",
+    "cross-river-lending-api-openapi.yml",
+    "cross-river-wires-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}
