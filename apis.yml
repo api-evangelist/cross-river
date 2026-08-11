@@ -274,7 +274,7 @@ common:
   url: https://www.crossriver.com/
 - type: Documentation
   url: https://docs.crossriver.com/
-- type: SignUp
+- type: Signup
   url: https://www.crossriver.com/contact
 - type: LinkedIn
   url: https://www.linkedin.com/company/cross-river-bank

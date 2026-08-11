@@ -1,0 +1,15 @@
+#
+
+## Docs
+
+- [Quickstart](https://docs.crossriver.com/get-started/quickstart.md): Get started with Cross River APIs—get credentials, use tokens and webhooks, test in our sandbox or using our public Postman collection.
+- [Welcome](https://docs.crossriver.com.md): Explore Cross River docs for our quick guides, APIs and tutorials. Get started fast and make the most of our banking platform.
+- [Sandbox and production differences](https://docs.crossriver.com/get-started/quickstart/sandbox-and-production-differences.md): Discover the key differences between the Sandbox and Production environments.
+- [Get access token](https://docs.crossriver.com/get-started/quickstart/get-access-token.md): Cross River uses OAuth 2.0 for secure API access. Get your credentials, request a token, and use it in your API calls with Postman, cURL, or COS Explorer.
+- [Sandbox](https://docs.crossriver.com/get-started/quickstart/sandbox.md): Explore the Cross River Sandbox, a secure environment for developers to test integrations, simulate workflows, and ensure seamless transitions to production without risk.
+- [Webhooks](https://docs.crossriver.com/get-started/quickstart/webhooks.md): Webhooks push real-time updates to your system, reducing latency and polling. Register via API to get instant notifications on account or transaction changes.
+- [Use access token](https://docs.crossriver.com/get-started/quickstart/use-access-token.md): Learn how to obtain and securely use an API access token, including steps for acquiring credentials, making requests, and examples for cURL and Postman.
+- [Postman collection](https://docs.crossriver.com/get-started/quickstart/postman-collection.md): Use our Postman collection for our APIs, featuring setup instructions, authentication details, and code snippets for seamless integration and testing.
+- [Connect to Cross River docs via MCP](https://docs.crossriver.com/get-started/quickstart/connect-with-mcp.md): The document explains that an AI assistant can access and interpret your API docs via an MCP server, enabling fast, accurate, read‑only answers to API questions.
+- [Get API credentials](https://docs.crossriver.com/get-started/quickstart/get-api-credentials.md): Register for Cross River APIs, obtain your access token, and ensure your IP is allowlisted to access the sandbox environment successfully.
+- [Sandbox environments](https://docs.crossriver.com/get-started/quickstart/sandbox-environments.md): Use our sandbox to safely test APIs for customer management, accounts, cards, payments, lending, and webhooks, ensuring a smooth move to production.
