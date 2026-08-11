@@ -254,6 +254,16 @@ apis:
   - type: Documentation
     url: https://docs.crossriver.com/apis/customer-management
 common:
+- type: Blog
+  url: https://www.crossriver.com/insights
+- type: Support
+  url: https://www.crossriver.com/support
+- type: DeveloperPortal
+  url: https://www.crossriver.com/developers
+- type: PrivacyPolicy
+  url: https://www.crossriver.com/privacy-policy
+- type: GettingStarted
+  url: https://docs.crossriver.com/get-started/quickstart
 - type: AgenticAccess
   url: agentic-access/cross-river-agentic-access.yml
 - type: DomainSecurity
