@@ -53,7 +53,7 @@ tags:
 - FedNow
 created: '2026-07-12'
 modified: '2026-07-12'
-specificationVersion: '0.19'
+specificationVersion: '0.23'
 apis:
 - aid: cross-river:cross-river-accounts-api
   name: Cross River Accounts API
