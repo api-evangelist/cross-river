@@ -40,6 +40,20 @@ image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cross-rive
 tags:
 - Embedded Finance
 - Banking as a Service
+- Backend-as-a-Service
+- Payments
+- ACH
+- Wire
+- Push to Card
+- Lending
+- Account
+- Cards
+- Fintech
+- RTP
+- FedNow
+tags_raw:
+- Embedded Finance
+- Banking as a Service
 - BaaS
 - Payments
 - ACH
@@ -61,6 +75,8 @@ apis:
   humanURL: https://docs.crossriver.com/apis/accounts
   baseURL: https://sandbox.crbcos.com/core
   tags:
+  - Account
+  tags_raw:
   - Accounts
   properties:
   - type: OpenAPI
