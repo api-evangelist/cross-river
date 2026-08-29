@@ -1,0 +1,76 @@
+slug: cross-river
+provider: Cross River
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Banking & Capital Markets
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 6
+edges:
+- tag: Accounts
+  spec_file: cross-river-accounts-api-openapi.yml
+  capability_id: BC-1330.10
+  capability_id_l1: BC-1330
+  capability_name: Deposit Account Management
+  confidence: 0.9
+  evidence: POST /core/v1/dda/accounts  createAccount  'Open a deposit account'; 'Restrict an account';
+    'List account statements'
+  reason: DDA (demand deposit account) opening, restriction and statement retrieval — deposit/current
+    account management at a chartered bank.
+- tag: Instant Payments
+  spec_file: cross-river-instant-payments-api-openapi.yml
+  capability_id: BC-1340.50
+  capability_id_l1: BC-1340
+  capability_name: Real-Time Payment Management
+  confidence: 0.9
+  evidence: POST /rtp/v1/payments  sendInstantPayment  'Send an instant payment'; 'Get supported instant-payment
+    services'; description names 'RTP / FedNow / CRNow'
+  reason: Explicitly the real-time/instant payment rails (RTP, FedNow), including directory reachability
+    lookup.
+- tag: Cards
+  spec_file: cross-river-cards-api-openapi.yml
+  capability_id: BC-1340.60
+  capability_id_l1: BC-1340
+  capability_name: Card Issuance Management
+  confidence: 0.85
+  evidence: POST /cardmanagement/v1/cards 'Create a card'; 'Activate a card'; 'Suspend a card'; 'Close
+    a card'
+  reason: Card creation, activation and lifecycle state changes — card issuance and management, matching
+    the vendor's stated 'card issuing and management' scope. Transaction switching/authorisation is not
+    present here.
+- tag: Lending
+  spec_file: cross-river-lending-api-openapi.yml
+  capability_id: BC-1320
+  capability_id_l1: BC-1320
+  capability_name: Credit & Lending Management
+  confidence: 0.8
+  evidence: POST /loan  addLoan  'Add a loan'; GET /loandetail/{id} 'Get loan details'; PUT /loan/{id}/fundinginfo
+    'Request loan funding rails'
+  reason: Loan booking, retrieval and funding-rail instruction for a bank's lending programme. Sits squarely
+    in Credit & Lending, but 'add loan / fund loan' straddles origination and servicing, so no L2 asserted.
+- tag: ACH
+  spec_file: cross-river-ach-api-openapi.yml
+  capability_id: BC-1340.30
+  capability_id_l1: BC-1340
+  capability_name: Clearing & Settlement Management
+  confidence: 0.7
+  evidence: POST /ach/v1/payments  sendAchPayment  'Send an ACH payment'; schema AchPaymentInput
+  reason: Single operation submits payments onto the domestic ACH clearing rail, which the candidate list
+    explicitly places under Clearing & Settlement (ACH). Some ambiguity with payment initiation/processing,
+    hence 0.7.
+- tag: Customer Management
+  spec_file: cross-river-customer-management-api-openapi.yml
+  capability_id: BC-1300.20
+  capability_id_l1: BC-1300
+  capability_name: KYC & Customer Due Diligence Management
+  confidence: 0.7
+  evidence: 'POST /core/v1/cm/customers/{customerId}/beneficial-owners  ''Add a beneficial owner''; POST
+    .../identifications  ''Add an identification''; description: ''customer management (KYC / onboarding)'''
+  reason: Customer records plus beneficial-owner and identification document capture is the CDD/KYC data
+    set for banking customers. Some overlap with onboarding and customer information management, so 0.7.

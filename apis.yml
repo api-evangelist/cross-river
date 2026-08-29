@@ -282,6 +282,9 @@ apis:
   - type: Documentation
     url: https://docs.crossriver.com/apis/customer-management
 common:
+- type: CapabilityMap
+  url: capabilities/cross-river-capability-edges.yml
+  name: Cross River Business Capability Map
 - type: Blog
   url: https://www.crossriver.com/insights
 - type: Support
